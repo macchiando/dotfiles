@@ -1,0 +1,7 @@
+name = "mgs"
+background = "#111612"
+foreground = "#e0e0e0"
+primary = "#ffb703"
+secondary = "#4ade80"
+accent = "#ef4444"
+muted = "#2d3732"
