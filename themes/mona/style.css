@@ -1,0 +1,80 @@
+@define-color bg-dark #282828;
+@define-color bg-hard #1d2021;
+@define-color bg-soft #32302f;
+@define-color fg-light #ebdbb2;
+@define-color fg-dark #a89984;
+@define-color red #cc241d;
+@define-color green #98971a;
+@define-color yellow #d79921;
+@define-color blue #458588;
+@define-color purple #b16286;
+@define-color aqua #689d6a;
+@define-color orange #d65d0e;
+
+* {
+    border: none;
+    font-family: "JetBrainsMono Nerd Font", monospace;
+    font-size: 14px;
+    font-weight: bold;
+    min-height: 0;
+}
+
+/* Sfondo trasparente per l'effetto floating della barra */
+window#waybar {
+    background-color: transparent;
+    color: @fg-light;
+}
+
+/* Contenitori dei moduli con stile a pillola/isola */
+.modules-left, .modules-center, .modules-right {
+    background-color: rgba(29, 32, 33, 0.85);
+    border: 1px solid rgba(69, 133, 136, 0.3);
+    border-radius: 12px;
+    padding: 2px 8px;
+    margin: 6px 10px;
+}
+
+#workspaces button {
+    padding: 2px 8px;
+    margin: 3px 2px;
+    background-color: @bg-soft;
+    color: @fg-dark;
+    border-radius: 8px;
+    transition: all 0.2s ease-in-out;
+}
+
+#workspaces button.active {
+    background-color: @blue;
+    color: @bg-hard;
+}
+
+#workspaces button.focused {
+    background-color: #f6d56a;
+    color: @bg-hard;
+}
+
+#workspaces button:hover {
+    background-color: @aqua;
+    color: @bg-hard;
+}
+
+#clock, #battery, #cpu, #memory, #network, #pulseaudio {
+    padding: 0 10px;
+    margin: 4px 3px;
+    background-color: @bg-soft;
+    border-radius: 8px;
+    color: @fg-light;
+    transition: background-color 0.2s;
+}
+
+#clock:hover, #battery:hover, #cpu:hover, #memory:hover, #network:hover, #pulseaudio:hover {
+    background-color: @bg-hard;
+}
+
+#battery.warning {
+    color: @yellow;
+}
+
+#battery.critical {
+    color: @red;
+}

@@ -1,0 +1,76 @@
+// Configurazione Niri - Tema Nord
+
+input {
+    keyboard {
+        xkb {
+            layout "it"
+        }
+    }
+    touchpad {
+        tap
+        natural-scroll
+    }
+    mouse {
+    }
+}
+
+output "eDP-1" {
+    // Risoluzione e refresh rate (modificabili a seconda del display)
+    mode "1920x1080@60"
+    scale 1.0
+    position x=0 y=0
+}
+
+layout {
+    gaps 12
+    center-focused-column "never"
+
+    preset-column-widths {
+        proportion 0.33333
+        proportion 0.5
+        proportion 0.66667
+    }
+
+    default-column-width { proportion 0.5; }
+
+    focus-ring {
+        width 2
+        active-color "#88c0d0"
+        inactive-color "#4c566a"
+    }
+
+    border {
+        off
+    }
+
+    struts {
+        top 38
+    }
+}
+
+// Scorciatoie e avvio dei servizi essenziali
+spawn-at-startup "waybar"
+spawn-at-startup "swaybg" "-m" "fill" "-i" "~/.config/background"
+
+// Mappatura tasti essenziali (esempi standard per Niri)
+binds {
+    Mod+Shift+Slash { show-hotkey-overlay; }
+
+    // Launcher (Fuzzel in stile Spotlight)
+    Mod+Space { spawn "fuzzel"; }
+
+    // Terminale (Kitty)
+    Mod+Return { spawn "kitty"; }
+
+    // Chiusura finestra
+    Mod+Q { close-window; }
+
+    // Spostamento focus
+    Mod+Left  { focus-column-left; }
+    Mod+Down  { focus-window-down; }
+    Mod+Up    { focus-window-up; }
+    Mod+Right { focus-column-right; }
+
+    // Screenshot
+    Print { screenshot; }
+}
