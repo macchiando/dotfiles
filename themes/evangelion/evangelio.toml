@@ -1,0 +1,7 @@
+name = "evangelion"
+background = "#1a1025"
+foreground = "#f0f0f0"
+primary = "#7b2dbe"
+secondary = "#39ff14"
+accent = "#ff4500"
+muted = "#4a3b5c"

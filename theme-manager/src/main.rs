@@ -10,11 +10,24 @@ use ratatui::{
     widgets::{Block, Borders, List, ListItem, ListState},
     Terminal,
 };
+use serde::{Deserialize, Serialize};
 use std::env;
 use std::fs;
+use std::io;
 use std::path::{Path, PathBuf};
 use std::process::Command;
-use std::io;
+
+/// Struttura per leggere i dati di configurazione del tema da file TOML
+#[derive(Serialize, Deserialize, Debug, Clone)]
+struct ThemeConfig {
+    name: String,
+    background: String,
+    foreground: String,
+    primary: String,
+    secondary: String,
+    accent: String,
+    muted: String,
+}
 
 struct App {
     themes: Vec<String>,
@@ -192,7 +205,19 @@ fn run_app<B: ratatui::backend::Backend>(terminal: &mut Terminal<B>, mut app: Ap
 fn apply_theme(theme: &str, themes_dir: &Path, home: &str) {
     let theme_path = themes_dir.join(theme);
 
-    // 1. Applica il tema di Kitty sovrascrivendo contemporaneamente tutti i file possibili
+    // Legge opzionalmente il file TOML del tema (es. evangelion.toml) se presente
+    let config_toml_path = theme_path.join(format!("{}.toml", theme));
+    if config_toml_path.exists() {
+        if let Ok(contents) = fs::read_to_string(&config_toml_path) {
+            if let Ok(theme_config) = toml::from_str::<ThemeConfig>(&contents) {
+                println!("Configurazione TOML caricata per: {}", theme_config.name);
+                println!(" - Background: {}", theme_config.background);
+                println!(" - Primary: {}", theme_config.primary);
+            }
+        }
+    }
+
+    // 1. Applica il tema di Kitty sovrascrivendo i file di configurazione
     let kitty_src = theme_path.join("kitty.conf");
     let kitty_dir = format!("{}/.config/kitty", home);
     
@@ -241,7 +266,7 @@ fn apply_theme(theme: &str, themes_dir: &Path, home: &str) {
         let _ = fs::copy(&fuzzel_src, &fuzzel_dest);
     }
 
-    // 6. Applica lo sfondo con swaybg usando il flag corretto (-i)
+    // 6. Applica lo sfondo con swaybg
     let extensions = ["png", "jpg", "jpeg"];
     let mut wallpaper_applied = false;
     for ext in extensions {
@@ -250,10 +275,8 @@ fn apply_theme(theme: &str, themes_dir: &Path, home: &str) {
             if let Some(wallpaper_path) = wallpaper_src.to_str() {
                 println!("Trovato sfondo: {}", wallpaper_path);
                 
-                // Termina eventuali istanze precedenti di swaybg
                 let _ = Command::new("pkill").arg("swaybg").status();
                 
-                // Avvia swaybg con -i e -m fill
                 let status = Command::new("swaybg")
                     .args(["-m", "fill", "-i", wallpaper_path])
                     .spawn();
@@ -270,7 +293,7 @@ fn apply_theme(theme: &str, themes_dir: &Path, home: &str) {
     }
 
     if !wallpaper_applied {
-        println!("Nessun wallpaper.png/jpg trovato nella cartella del tema.");
+        println!("Nessun wallpaper trovato nella cartella del tema.");
     }
 
     // 7. Ricarica Waybar e Niri
